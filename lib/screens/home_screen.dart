@@ -9,7 +9,7 @@ import 'package:todo_app/common/task_item.dart';
 import "package:http/http.dart" as http;
 import 'package:todo_app/models/task.dart';
 
-var taskListUrl = Uri.http('192.168.1.14:8080', '/tasks');
+var taskListUrl = Uri.http('192.168.1.147:8080', '/tasks');
 
 Future _fecthTasks() {
   return http.get(taskListUrl);
@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: paddingValue),
                   child: Text(
-                    "What's up, Doudou!",
+                    "What's up, Floki!",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 38.0,

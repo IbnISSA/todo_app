@@ -70,7 +70,7 @@ class _MenuScreenState extends State<MenuScreen> {
             ),
             // Le nom d'utilisateur
             const Text(
-              "Doudou\nNDIAYE",
+              "Floki\nVilger¨",
               style: TextStyle(
                 fontSize: 50.0,
                 fontWeight: FontWeight.w600,
