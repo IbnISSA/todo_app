@@ -11,3 +11,4 @@ const double iconSize = 30.0;
 const paddingValue = 25.0;
 
 Color iconColor = Colors.white.withOpacity(.4);
+const String backendBaseUrl = "localhost:8080";

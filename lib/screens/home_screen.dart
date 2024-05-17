@@ -8,8 +8,9 @@ import 'package:todo_app/common/slider_item.dart';
 import 'package:todo_app/common/task_item.dart';
 import "package:http/http.dart" as http;
 import 'package:todo_app/models/task.dart';
+import 'package:todo_app/screens/new_task_screen.dart';
 
-var taskListUrl = Uri.http('192.168.1.147:8080', '/tasks');
+var taskListUrl = Uri.http(backendBaseUrl, '/tasks');
 
 Future _fecthTasks() {
   return http.get(taskListUrl);
@@ -36,6 +37,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  rebuildHomePage() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -50,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
-            onPressed: () => print("Add Button Pressed"),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => const NewTaskScreen())),
             backgroundColor: businessIndicator,
             shape: const CircleBorder(),
             child: const Icon(
@@ -150,8 +156,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (snapshot.data.statusCode == 200) {
                         for (var jsonItem
                             in convert.jsonDecode(snapshot.data.body)) {
-                          taskItems
-                              .add(TaskItem(task: Task.fromJson(jsonItem)));
+                          taskItems.add(TaskItem(
+                              task: Task.fromJson(jsonItem),
+                              updateHome: rebuildHomePage));
                         }
                         return ListView(
                             padding: const EdgeInsets.symmetric(

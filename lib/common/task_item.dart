@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:todo_app/common/categories.dart';
 import 'package:todo_app/common/commons.dart';
 import 'package:todo_app/models/task.dart';
@@ -8,8 +9,9 @@ import 'package:http/http.dart' as http;
 
 class TaskItem extends StatefulWidget {
   final Task task;
+  final VoidCallback updateHome;
 
-  const TaskItem({super.key, required this.task});
+  const TaskItem({super.key, required this.task, required this.updateHome});
 
   @override
   State<TaskItem> createState() => _TaskItemState();
@@ -18,11 +20,11 @@ class TaskItem extends StatefulWidget {
 class _TaskItemState extends State<TaskItem> {
   bool isLoading = false;
 
-  void _closeTask(Task task) async {
+  void _closeTask(Task task, BuildContext context) async {
     setState(() {
       isLoading = true;
     });
-    var taskUpdateUrl = Uri.http('192.168.1.147:8080', '/tasks/${task.id}');
+    var taskUpdateUrl = Uri.http(backendBaseUrl, '/tasks/${task.id}');
     Task taskToSend = Task(
         id: task.id,
         title: task.title,
@@ -33,35 +35,63 @@ class _TaskItemState extends State<TaskItem> {
         headers: {'Content-Type': 'application/json'});
     setState(() {
       isLoading = false;
+      _showTaskClosureResult(context, updateResponse);
     });
-    print("--------------- Response Code: ${updateResponse.statusCode}");
-    print("--------------- Response Body: ${updateResponse.body}");
-    //updateResponse.statusCode ==
+    // print("--------------- Response Code: ${updateResponse.statusCode}");
+    // print("--------------- Response Body: ${updateResponse.body}");
+    widget.updateHome();
   }
 
-  void _showTaskClosureConfimationn(BuildContext context, Task task) {
+  void _showTaskClosureConfimation(BuildContext context, Task task) {
+    List<Widget> secondActionButton = task.isDone
+        ? []
+        : [
+            CupertinoDialogAction(
+              //TODO: Call API for the changing
+              isDestructiveAction: true,
+              onPressed: () {
+                _closeTask(task, context);
+                Navigator.pop(context);
+              },
+              child: const Text('Yes'),
+            ),
+          ];
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text("Confirmation"),
-        content: const Text(
-            "You're about to mark this task done. Do you want to continue?"),
+        content: Text(task.isDone
+            ? "This task is already done."
+            : "You're about to mark this task done. Do you want to continue?"),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(task.isDone ? "Okay" : 'No'),
+          ),
+          ...secondActionButton,
+        ],
+      ),
+    );
+  }
+
+  void _showTaskClosureResult(BuildContext context, Response updateResponse) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(updateResponse.statusCode == 200 ? "Success" : "Error"),
+        content: Text(updateResponse.statusCode == 200
+            ? "The task have been closed successfully."
+            : "Something gone Wrong. Try Again Later"),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             isDefaultAction: true,
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('No'),
-          ),
-          CupertinoDialogAction(
-            //TODO: Call API for the changing
-            isDestructiveAction: true,
-            onPressed: () {
-              _closeTask(task);
-              Navigator.pop(context);
-            },
-            child: const Text('Yes'),
+            child: const Text('Okay'),
           ),
         ],
       ),
@@ -89,7 +119,7 @@ class _TaskItemState extends State<TaskItem> {
                   )
                 : IconButton(
                     onPressed: () =>
-                        _showTaskClosureConfimationn(context, widget.task),
+                        _showTaskClosureConfimation(context, widget.task),
                     icon: Container(
                       padding: const EdgeInsets.all(2.0),
                       height: 25,
