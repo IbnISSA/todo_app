@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/common/categories.dart';
+import 'package:todo_app/models/categories.dart';
 import 'package:todo_app/common/commons.dart';
 
 class SliderItem extends StatelessWidget {

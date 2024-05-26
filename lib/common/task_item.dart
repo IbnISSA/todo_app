@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:todo_app/common/categories.dart';
+import 'package:todo_app/models/categories.dart';
 import 'package:todo_app/common/commons.dart';
 import 'package:todo_app/models/task.dart';
 import 'dart:convert' as convert;

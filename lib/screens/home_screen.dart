@@ -2,7 +2,7 @@ import 'dart:convert' as convert;
 
 import 'package:flutter/material.dart';
 import 'package:todo_app/common/block_title.dart';
-import 'package:todo_app/common/categories.dart';
+import 'package:todo_app/models/categories.dart';
 import 'package:todo_app/common/commons.dart';
 import 'package:todo_app/common/slider_item.dart';
 import 'package:todo_app/common/task_item.dart';
@@ -56,7 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton(
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const NewTaskScreen())),
+                builder: (BuildContext context) =>
+                    NewTaskScreen(updateHome: rebuildHomePage))),
             backgroundColor: businessIndicator,
             shape: const CircleBorder(),
             child: const Icon(

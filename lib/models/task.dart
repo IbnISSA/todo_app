@@ -1,13 +1,13 @@
-import '../common/categories.dart';
+import 'categories.dart';
 
 class Task {
-  final int id;
+  int? id;
   final String title;
   final bool isDone;
   final Categories category;
 
   Task(
-      {required this.id,
+      {this.id,
       required this.title,
       required this.isDone,
       required this.category});
